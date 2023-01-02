@@ -1,4 +1,3 @@
-const { Router } = require('express')
 const express = require('express')
 const routes = express.Router()
 const { upload, getPost, userPost, Like, addCommnent, popcomment } = require('../controller/managePost')

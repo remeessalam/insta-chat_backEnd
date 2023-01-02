@@ -1,4 +1,5 @@
 const userSchema = require('../model/userModel')
+const notificationSchema = require('../model/notificationModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const createToken = require('../middleware/jwt')
@@ -19,7 +20,11 @@ module.exports = {
       else {
          const user = await userSchema.create({ name: fullName, email: email, password: pass })
          const token = createToken({ user: user, userId: user.id })
-         res.status(201).json({ id: user._id, status: true, user: user, token })
+         res.status(201).json({ userid: user._id, status: true, user: user, token })
+         const notification = await notificationSchema.findById(user._id)
+         if (!notification) {
+            notificationSchema.create({ user: user._id })
+         }
       }
    }
    ),
@@ -30,12 +35,20 @@ module.exports = {
          const guser = await userSchema.findOne({ email: googledata.email })
          if (guser) {
             const token = createToken({ user: guser, userId: guser.id })
-            res.status(201).json({ id: guser._id, status: true, user: guser, token })
+            res.status(201).json({ userid: guser._id, status: true, user: guser, token })
+            const notification = await notificationSchema.findOne({ user: guser._id })
+            if (!notification) {
+               notificationSchema.create({ user: guser._id })
+            }
          }
          else {
             const user = await userSchema.create({ name: googledata.name, email: googledata.email, password: null, image: googledata.picture })
             const token = createToken({ user: user, userId: user.id })
-            res.status(201).json({ id: user._id, status: true, user: user, token })
+            res.status(201).json({ userid: user._id, status: true, user: user, token })
+            const notification = await notificationSchema.findOne({ user: user._id })
+            if (!notification) {
+               notificationSchema.create({ user: user._id })
+            }
          }
       }
       else {
@@ -46,6 +59,10 @@ module.exports = {
             if (use) {
                const token = createToken({ user: user, userId: user.id })
                res.status(201).json({ userid: user._id, status: true, user: user, token })
+               const notification = await notificationSchema.findOne({ user: user._id })
+               if (!notification) {
+                  notificationSchema.create({ user: user._id })
+               }
             }
             else {
                throw Error('Sorry, your password was incorrect. Please double-check your password.')
@@ -70,7 +87,7 @@ module.exports = {
 
    getuser: asyncwrappe(async (req, res) => {
       const user = req.userId
-      const userdetails = await userSchema.findOne({ _id: user })
+      const userdetails = await userSchema.findOne({ _id: user }).populate('followers').populate('following')
       res.json({ status: true, user: userdetails })
    }),
 
@@ -90,6 +107,7 @@ module.exports = {
          userSchema.findByIdAndUpdate(userid, { $addToSet: { following: frndId } }).then(data => {
             userSchema.findByIdAndUpdate(frndId, { $addToSet: { followers: userid } }).then(data => {
                resolve(data)
+               console.log('follow')
                res.json({ status: true, resolve })
             }).catch(err => reject(err))
          }).catch(err => reject(err))
@@ -103,6 +121,7 @@ module.exports = {
          userSchema.findByIdAndUpdate(userid, { $pull: { following: frndId } }).then(data => {
             userSchema.findByIdAndUpdate(frndId, { $pull: { followers: userid } }).then(data => {
                resolve(data)
+               console.log('unfollow')
                res.json({ status: true, resolve })
             }).catch(err => reject(err))
          }).catch(err => reject(err))

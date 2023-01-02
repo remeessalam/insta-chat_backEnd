@@ -1,17 +1,33 @@
 const { asyncwrappe } = require('../middleware/asyncwrapper')
 const postSchema = require('../model/postModel')
+const notificationSchema = require('../model/notificationModel')
+const userSchema = require('../model/userModel')
 
 
 module.exports = {
 
-    upload: asyncwrappe(async (req, res) => {
-        const post = await postSchema.create({
+    upload: asyncwrappe((req, res) => {
+        postSchema.create({
             user: req.userId,
-            image: req.body.post
-        })
-            .then(data => {
-                res.json({ msg: 'post added in database' })
+            image: req.body.post,
+            caption: req.body.caption
+        }).then(data => {
+            res.json({ msg: 'post added in database' })
+            const postes = data
+            userSchema.findById(data.user).then((data) => {
+                const followers = data.followers
+                const noty = {
+                    post: postes._id,
+                    posteduser: req.userId,
+                    time: new Date()
+                }
+                console.log(followers, noty, 'followers ==========')
+                notificationSchema.updateMany({ user: { $in: [...followers] } }, { $push: { posts: { $each: [noty], $position: 0 } } })
+                    .then((data) => {
+                        console.log(data, 'notification added')
+                    })
             })
+        })
     }),
 
     getPost: asyncwrappe((req, res) => {

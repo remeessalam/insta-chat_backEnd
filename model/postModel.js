@@ -12,7 +12,9 @@ const postSchema = new mongoose.Schema({
     Likes: {
         type: Array,
         default: [],
-
+    },
+    caption:{
+        type:String
     },
     comments: [
         {

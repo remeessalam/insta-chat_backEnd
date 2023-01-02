@@ -4,6 +4,8 @@ const app = express();
 const cors = require('cors');
 const user = require('./routes/user');
 const post = require('./routes/post');
+const chat = require('./routes/chat');
+const notification = require('./routes/notification')
 const server = http.createServer(app);
 const moongose = require('mongoose');
 const { errorHandler } = require('./middleware/handlerror')
@@ -24,6 +26,8 @@ app.use(cors({
 
 app.use('/', user)
 app.use('/post', post)
+app.use('/chat', chat)
+app.use('/notification', notification)
 
 app.use(errorHandler)
 
@@ -32,4 +36,3 @@ server.listen(PORT, () =>
     console.log(` app listening on port ${PORT}!`),
 );
 
-                            

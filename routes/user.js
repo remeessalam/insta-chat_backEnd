@@ -1,3 +1,4 @@
+// const { Router } = require('express')
 const express = require('express');
 const verify = require('../middleware/token');
 const { register, login, updateProfile, getuser, users, follow, unfollow, finduser, getfollowing } = require('../controller/authentication')
