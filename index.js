@@ -11,7 +11,7 @@ const moongose = require('mongoose');
 const { errorHandler } = require('./middleware/handlerror')
 app.use(express.json());
 
-moongose.connect('mongodb://localhost:27017/instachat')
+moongose.connect(process.env.MONGOURL)
     .then(() => {
         console.log('database connected')
     })
