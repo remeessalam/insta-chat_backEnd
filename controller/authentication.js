@@ -23,7 +23,7 @@ module.exports = {
          res.status(201).json({ userid: user._id, status: true, user: user, token })
          const notification = await notificationSchema.findById(user._id)
          if (!notification) {
-            notificationSchema.create({ user: user._id })
+            notificationSchema.create({ user: user._id})
          }
       }
    }
@@ -144,6 +144,19 @@ module.exports = {
          let user = await userSchema.find({ _id: userid }).populate('following')
          console.log(user)
          res.json({ user })
+      })
+   }),
+
+   addprofilepicture: asyncwrappe((req, res) => {
+      return new Promise((resolve, reject) => {
+         const userid = req.userId
+         const image = req.body.image
+         console.log(image,'image in req')
+         userSchema.findByIdAndUpdate(userid, { $set: { image: image } })
+            .then((data) => {
+               console.log(data ,'image changed')
+               res.json({ status: true,user:data })
+            })
       })
    })
 }

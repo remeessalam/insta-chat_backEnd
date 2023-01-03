@@ -7,6 +7,7 @@ const userSchema = require('../model/userModel')
 module.exports = {
 
     upload: asyncwrappe((req, res) => {
+        console.log(req.body.caption,'arrray')
         postSchema.create({
             user: req.userId,
             image: req.body.post,
