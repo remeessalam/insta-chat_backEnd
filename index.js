@@ -16,10 +16,10 @@ moongose.connect('mongodb://localhost:27017/instachat')
         console.log('database connected')
     })
     .catch((err) => {
-        (console.err.message)
+        console.log(err);
     })
 app.use(cors({
-    origin: ["http://localhost:3000"],
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
 }));
