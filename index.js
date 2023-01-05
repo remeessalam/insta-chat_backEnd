@@ -31,7 +31,7 @@ app.use('/notification', notification)
 
 app.use(errorHandler)
 
-const PORT = process.env.PORT || 2000
+const PORT = process.env.PORT || 8000
 server.listen(PORT, () =>
     console.log(` app listening on port ${PORT}!`),
 );
