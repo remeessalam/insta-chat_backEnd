@@ -7,7 +7,7 @@ const userSchema = require('../model/userModel')
 module.exports = {
 
     upload: asyncwrappe((req, res) => {
-        console.log(req.body.caption,'arrray')
+        console.log(req.body.caption, 'arrray')
         postSchema.create({
             user: req.userId,
             image: req.body.post,
@@ -34,6 +34,16 @@ module.exports = {
     getPost: asyncwrappe((req, res) => {
         return new Promise((resolve, reject) => {
             postSchema.find().sort({ createdAt: '-1' }).populate('user').populate('comments.commentBy').then((post) => {
+                res.json({ status: true, post })
+            })
+        })
+    }),
+    getfriendpost: asyncwrappe((req, res) => {
+        const user = req.body.id
+        return new Promise((resolve, reject) => {
+            console.log(user, 'user id reached')
+            postSchema.find({ user }).sort({ createdAt: '-1' }).populate('user').populate('comments.commentBy').then((post) => {
+                console.log(post, 'post================')
                 res.json({ status: true, post })
             })
         })

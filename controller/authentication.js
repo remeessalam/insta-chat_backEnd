@@ -91,6 +91,14 @@ module.exports = {
       res.json({ status: true, user: userdetails })
    }),
 
+   getfriend: asyncwrappe(async (req, res) => {
+      const user = req.body.id
+      console.log(user,'user id reached in get friend request')
+      const frienddetails = await userSchema.findOne({ _id: user }).populate('followers').populate('following')
+      res.json({ status: true,  frienddetails })
+      console.log(frienddetails,'=============frienddetails============')
+   }),
+
    users: asyncwrappe(async (req, res) => {
       const userid = req.userId
       var user = await userSchema.findById(userid)
