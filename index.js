@@ -24,7 +24,7 @@ app.use(cors({
     methods: ["GET", "POST"],
     credentials: true,
 }));
-app.use('/',(req,res,next)=>{
+app.use('/login',(req,res,next)=>{
     res.json('connected',process.env.MONGOURL)
     next()
 })
