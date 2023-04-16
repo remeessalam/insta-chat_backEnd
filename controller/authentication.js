@@ -50,6 +50,7 @@ module.exports = {
                notificationSchema.create({ user: user._id })
             }
          }
+         
       }
       else {
          const { email, password } = req.body

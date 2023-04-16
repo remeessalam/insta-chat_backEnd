@@ -10,6 +10,7 @@ const server = http.createServer(app);
 const moongose = require('mongoose');
 const { errorHandler } = require('./middleware/handlerror')
 app.use(express.json());
+require('dotenv').config()
 
 moongose.connect(process.env.MONGOURL)
     .then(() => {
@@ -18,7 +19,7 @@ moongose.connect(process.env.MONGOURL)
     .catch((err) => {
         console.log(err);
     })
-app.use(cors({
+app.use(cors({ 
     origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
@@ -31,7 +32,7 @@ app.use('/notification', notification)
 
 app.use(errorHandler)
 
-const PORT = process.env.PORT || 8000
+const PORT = 8000
 server.listen(PORT, () =>
     console.log(` app listening on port ${PORT}!`),
 );
